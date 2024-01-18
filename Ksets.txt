@@ -1,0 +1,501 @@
+{$CLEO .csa}
+{$NOSOURCE}
+{$include includes/CleoIniFiles.h}
+
+//booleans
+int bNoDrunkEffect, bDriveWWeapons, bSAimprovedWind
+int bNewMod, bExitCarFix, bAutoRemoveMarker, bHeadMove, RGBA[4]                            // Ksets by KillerSA
+int ReturnValue , bReturned
+
+const
+    // Func params
+    R0 = 0, R1 = 1, R2 = 2
+    R3 = 3, R4 = 4
+    
+    // addrs
+    DETAILEDWATERDIST = 0x6B156C
+    
+    // MakeNOP
+    NOP_DWORD = 0x8000F3AF // For 4 bytes
+    NOP_WORD = 0xBF00BF00 // For 2 bytes
+    
+    // Version
+    GTA_SA_2_00 = 17
+end
+
+int GameVersion = get_game_version, StreamMem
+if GameVersion <> GTA_SA_2_00
+then
+    end_thread
+end
+
+0DD0: StreamMem = get_label_addr @_ZN10CStreaming18ms_memoryAvailableE
+StreamMem = get_func_addr_by_cstr_name StreamMem
+
+:Reload
+
+if cleo_call @OpenIniFile 0
+then
+    cleo_call @GetValueFromIni 1 _integer bAutoRemoveMarker
+
+    cleo_call @GetValueFromIni 1 _integer bHeadMove
+    cleo_call @GetValueFromIni 1 _integer ReturnValue // FixedCassinoLights
+    if ReturnValue == TRUE
+    then
+        write_mem_addr 0x6BD1E4 value 1 size 1 add_ib 1 protect 1
+    else
+        write_mem_addr 0x6BD1E4 value 0 size 1 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _integer bSAimprovedWind
+    cleo_call @GetValueFromIni 1 _integer ReturnValue // No3dGunFlash
+    if ReturnValue == TRUE
+    then
+        write_mem_addr 0x4A4CCA value NOP_WORD size 4 add_ib 1 protect 1
+        write_mem_addr 0x4A4CCE value NOP_WORD size 4 add_ib 1 protect 1
+    else
+        write_mem_addr 0x4A4CCA value 0xF4E9A129 size 4 add_ib 1 protect 1
+        write_mem_addr 0x4A4CCE value 0xE000ECA8 size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _integer bNoDrunkEffect
+    cleo_call @GetValueFromIni 1 _integer bDriveWWeapons
+
+    cleo_call @GetValueFromIni 1 _integer ReturnValue // NoShakeOnExplosion
+    if ReturnValue == TRUE
+    then
+        write_mem_addr 0x5D87A6 value NOP_DWORD size 4 add_ib 1 protect 1
+    else
+        write_mem_addr 0x5D87A6 value 0xE1B8F7BC size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _integer ReturnValue // NoShakeSniper
+    if ReturnValue == TRUE
+    then
+        write_mem_addr 0x5DD8CE value NOP_DWORD size 4 add_ib 1 protect 1
+    else
+        write_mem_addr 0x5DD8CE value 0xE5C4F7BB size 4 add_ib 1 protect 1
+    end
+    cleo_call @GetValueFromIni 1 _integer bExitCarFix
+    cleo_call @GetValueFromIni 1 _integer ReturnValue // StreamMemory
+    if ReturnValue > 0
+    then
+        ReturnValue *= 1048576 // convert to bits
+        write_mem_addr StreamMem value ReturnValue size 4 add_ib 0 protect 1
+    end
+    
+    // Skid color
+    
+    cleo_call @GetValueFromIni 1 _integer RGBA[0] // Red
+    cleo_call @GetValueFromIni 1 _integer RGBA[1] // Green
+    cleo_call @GetValueFromIni 1 _integer RGBA[2] // Blue
+    cleo_call @GetValueFromIni 1 _integer RGBA[3] // Alpha
+    
+    cleo_call @GetValueFromIni 1 _integer ReturnValue
+    if ReturnValue > 0
+    then
+        write_mem_addr DETAILEDWATERDIST value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    // Effects draw distance
+    cleo_call @GetValueFromIni 1 _float ReturnValue // BoatSplashes
+    if ReturnValue <> 80.0
+    then
+        write_mem_addr 0x589D60 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Blood
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x364118 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Wood
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x3643B4 value ReturnValue size 4 add_ib 1 protect 1
+    end
+
+    cleo_call @GetValueFromIni 1 _float ReturnValue // TyreBurst
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x364764 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // PunchImpact
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x364AF4 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Debris
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x364D0C value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Glass
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x364EFC value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelSpray
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x365250 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelGrass
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x3654E0 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelGravel
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x365760 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelMud
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x3659E8 value ReturnValue size 4 add_ib 1 protect 1
+    end
+
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelSand
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x365D64 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelDust
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x3660F8 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // SingleWheelParticles
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x58B978 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // ExhaustParticles
+    if ReturnValue <> 256.0
+    then
+        write_mem_addr 0x58B428 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // TankFire
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x366544 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WaterSplash
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x3665D4 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // BulletSplash
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x366668 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Gunshot
+    if ReturnValue <> 625.0
+    then
+        write_mem_addr 0x366348 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // HeliDust
+    if ReturnValue <> 2500.0
+    then
+        write_mem_addr 0x560234 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // Sparks
+    if ReturnValue <> 22500.0
+    then
+        write_mem_addr 0x364614 value ReturnValue size 4 add_ib 1 protect 1
+    end
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // PedsLod
+    write_mem_addr 0x5D6348 valor ReturnValue size 4 add_ib 1 proteger 1
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // VehiclesLod
+    write_mem_addr 0x5D6344 valor ReturnValue size 4 add_ib 1 proteger 1
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // SunSize
+    write_mem_addr 0x5A4028 value ReturnValue size 4 add_ib 1 protect 1
+    
+    cleo_call @GetValueFromIni 1 _float ReturnValue // WheelTurningSpeed
+    write_mem_addr 0x55C8AC value ReturnValue size 4 add_ib 1 protect 1
+
+    cleo_call @CloseIni 0
+end
+    int bVar = true
+    int blipp, gMobMenu, i, pSkidColor, CRGBA
+    float x, y, z
+
+    
+    0DD0: CRGBA = get_label_addr @CRGBA
+    0DD1: CRGBA = get_func_addr_by_cstr_name CRGBA
+
+    for i = 0 to 3 step 1
+        switch i
+            case 0
+                0DD0: pSkidColor = get_label_addr @SKID_COLOR_DEFAULT
+            case 1
+                0DD0: pSkidColor = get_label_addr @SKID_COLOR_SAND
+            case 2
+                0DD0: pSkidColor = get_label_addr @SKID_COLOR_MUD
+            case 3
+                0DD0: pSkidColor = get_label_addr @SKID_COLOR_BLOOD
+        end
+        pSkidColor = get_func_addr_by_cstr_name pSkidColor
+
+        set_register_value R0 value pSkidColor
+        set_register_value R1 value RGBA[0]
+        set_register_value R2 value RGBA[1]
+        set_register_value R3 value RGBA[2]
+        set_register_value R4 value RGBA[3]
+        context_call_func CRGBA
+    end
+
+    
+while true // loop
+    wait 0 ms 
+    
+    if has_game_just_returned_from_frontend
+    then
+        goto @Reload
+    end
+    
+    write_mem_addr 0x2C93DC value 0x74 size 1 add_ib 1 protect 1
+    
+    if bAutoRemoveMarker == TRUE
+    then
+        if 0AB6: store_target_marker_coords_to x y z
+        then
+            if 00FE:   actor $PLAYER_ACTOR sphere 0 in_sphere x y z radius 20.0 20.0 500.0
+            then
+                0DD0: gMobMenu = get_label_addr @gMobileMenu
+                gMobMenu = get_func_addr_by_cstr_name gMobMenu // android
+                gMobMenu += 0x48
+
+                0DD8: blipp = read_mem_addr gMobMenu size 4 add_ib 0
+                
+                remove_blip blipp
+                write_mem_addr gMobMenu value 0x0 size 4 add_ib 0 protect 0 // android
+            end
+        end
+    end
+
+    if bExitCarFix == TRUE
+    then
+        if is_player_playing $PLAYER_CHAR
+        then
+            if and
+            not is_char_getting_in_to_a_car $PLAYER_ACTOR // onde esta o 09DE no pesquisar?
+            is_char_in_any_car $PLAYER_ACTOR
+            bVar == true
+            then
+                if is_widget_released 0
+                then
+                    task_leave_any_car $PLAYER_ACTOR
+                end
+                if is_widget_doubletapped 0
+                then
+                    bVar = false
+                end
+            end
+
+            if bVar == false
+            then
+                if is_char_in_any_car $PLAYER_ACTOR
+                then
+                    task_leave_any_car $PLAYER_ACTOR
+                else
+                    bVar = true
+                end
+            end
+        end
+        bVar = true
+    end
+    
+    if bHeadMove == TRUE
+    then
+        cleo_call @HeadMove 0
+    end
+    
+    int pul
+    if bSAimprovedWind == TRUE // created by Rizky
+    then 
+        if pul == TRUE
+        then
+            goto @improved_wind_1b
+        end 
+        int pWindDir, iWeatherType
+        
+        0DD0: pWindDir = get_label_addr @_ZN8CWeather7WindDirE
+        pWindDir = get_func_addr_by_cstr_name pWindDir
+        write_mem_addr pWindDir value 4.0 size 4 add_ib 0 protect 0
+        0DD0: iWeatherType = get_label_addr @_ZN8CWeather17ForcedWeatherTypeE
+        iWeatherType = get_func_addr_by_cstr_name iWeatherType
+        iWeatherType = read_mem_addr iWeatherType size 1 fix_ib 0
+        if or
+         iWeatherType == 16
+         iWeatherType == 8
+         iWeatherType == 4
+         iWeatherType == 7
+         iWeatherType == 12
+         iWeatherType == 15
+         iWeatherType == 19
+        then
+            :improved_wind_1b
+            wait 0
+            0DD0: pWindDir = get_label_addr @_ZN8CWeather7WindDirE
+            pWindDir = get_func_addr_by_cstr_name pWindDir
+            write_mem_addr pWindDir value 2.5 size 4 add_ib 0 protect 0
+            0DD0: iWeatherType = get_label_addr @_ZN8CWeather17ForcedWeatherTypeE
+            iWeatherType = get_func_addr_by_cstr_name iWeatherType
+            iWeatherType = read_mem_addr iWeatherType size 1 fix_ib 0
+            if and
+             iWeatherType <> 16
+             iWeatherType <> 8
+             iWeatherType <> 4
+             iWeatherType <> 7
+             iWeatherType <> 12
+             iWeatherType <> 15
+             iWeatherType <> 19
+            then
+                pul = FALSE
+            else
+                pul = TRUE
+            end
+        end
+    end    
+    
+    if bNoDrunkEffect == TRUE
+    then
+        set_player_drunkenness $PLAYER_CHAR drunk_visuals 0
+    end
+    
+    if bDriveWWeapons == TRUE
+    then 
+        if and 
+         is_player_playing $PLAYER_CHAR
+         is_char_in_any_car $PLAYER_ACTOR
+        then 
+            06AB: set_actor $PLAYER_ACTOR all_weapons_hidden 1 
+        end 
+        
+        if not is_char_in_any_car $PLAYER_ACTOR
+        then 
+            06AB: set_actor $PLAYER_ACTOR all_weapons_hidden 0 
+        end
+    end
+    
+end
+
+:HeadMove // Cleo_call
+    0DD0: 29@ = get_label_addr @func // android
+    
+    if
+      Player.IsPlaying($PLAYER_CHAR)
+    then
+        1@, 2@, 3@ = Camera.GetActivePointAt()
+        04C4: store_coords_to 4@ 5@ 6@ from_actor $PLAYER_ACTOR with_offset 0.0 0.0 0.0
+        sub_float_lvar_from_float_lvar 4@ -= 1@
+        sub_float_lvar_from_float_lvar 5@ -= 2@
+        04C4: store_coords_to 10@ 11@ 12@ from_actor $PLAYER_ACTOR with_offset 4@ 5@ 6@
+        mult_float_lvar_by_float_lvar 10@ *= 1@
+        mult_float_lvar_by_float_lvar 11@ *= 2@
+        10@ *= 0.7
+        11@ *= 0.7
+        mult_float_lvar_by_float_lvar 4@ *= 10@
+        mult_float_lvar_by_float_lvar 5@ *= 11@
+        00A0: store_actor $PLAYER_ACTOR position_to 24@ 25@ 26@
+        set_lvar_float_to_lvar_float 17@ = 3@
+        sub_float_lvar_from_float_lvar 17@ -= 26@
+        0509: 27@ = distance_between_XY 24@ 25@ and_XY 4@ 5@
+        mult_float_lvar_by_float_lvar 17@ *= 27@
+        17@ *= -1.0
+        add_float_lvar_to_float_lvar 3@ += 17@
+        add_float_lvar_to_float_lvar 3@ += 27@
+        Task.LookAtCoord($PLAYER_ACTOR, 4@, 5@, 3@, -1)
+    end
+cleo_return 0
+
+:SKID_COLOR_BLOOD
+hex
+ "SKID_COLOR_BLOOD" 00
+end
+
+:SKID_COLOR_MUD
+hex
+ "SKID_COLOR_MUD" 00
+end
+
+:SKID_COLOR_DEFAULT //491
+hex
+ "SKID_COLOR_DEFAULT" 00
+end
+
+:SKID_COLOR_SAND
+hex
+ "SKID_COLOR_SAND" 00
+end
+
+:CRGBA
+hex
+ "_ZN5CRGBAC2Ehhhh" 00
+end
+
+:gMobileMenu
+hex
+ "gMobileMenu" 00
+end
+
+:ms_RadarTrace
+hex
+ "_ZN6CRadar13ms_RadarTraceE" 00
+end
+
+0662: printstring "Ksets created by Killer / my discord: _killer#6467"
+
+:_ZN11CTheScripts14StartNewScriptEPh 
+hex 
+"_ZN11CTheScripts14StartNewScriptEPh" 00
+end
+
+:_ZN10CStreaming18ms_memoryAvailableE
+hex
+ "_ZN10CStreaming18ms_memoryAvailableE" 00
+end
+
+//script memory 
+
+// ImprovedWind
+:_ZN8CWeather7WindDirE
+hex
+"_ZN8CWeather7WindDirE" 00
+end
+
+:_ZN8CWeather17ForcedWeatherTypeE
+hex
+"_ZN8CWeather17ForcedWeatherTypeE" 00
+end
+// ----------
+
+:SunSize
+hex 
+00(8)
+end
+
+004E: terminate_this_script

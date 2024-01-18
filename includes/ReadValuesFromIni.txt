@@ -1,0 +1,67 @@
+if OpenIniFile() // return as IniFile
+then
+
+    DATATYPE = _integer
+    GetValueFromIni()
+    //bHeadMove = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // FixedCassinoLights
+    //bFixedCassinoLights = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // NoVertigoEffect
+    //bNoVertigoEffect = ReturnValue
+    
+    DATATYPE = _integer
+    GetValueFromIni() // SAimprovedWind
+    //bSAimprovedWind = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni()  // No3dGunFlash
+    //bNo3dGunFlash = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // NoDrunkEffect
+    //bNoDrunkEffect = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // DriveWWeapons / created by Junior_Djjr
+    //bDriveWWeapons = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // DisableShakeOnExplosion by KillerSA
+    //bDisableShakeOnExplosion = ReturnValue
+    
+    DATATYPE = _integer 
+    GetValueFromIni() // DisableShakeSniper by KillerSA    
+    //bNoShakeSniper = ReturnValue
+    
+    DATATYPE = _integer
+    GetValueFromIni() // ExitCarFix by Yuna
+    //bExitCarFix = ReturnValue
+    
+    DATATYPE = _integer
+    GetValueFromIni() // StreamMemory
+    //addr = ReturnValue
+     
+    DATATYPE = _float 
+    GetValueFromIni() // PedsLod 
+    //PedsLod = fReturnValue
+    
+    DATATYPE = _float 
+    GetValueFromIni() // VehiclesLod
+    //VehiclesLod = fReturnValue
+     
+    DATATYPE = _float 
+    GetValueFromIni() // SunSize
+    //SunSizee = fReturnValue
+    
+    DATATYPE = _float
+    GetValueFromIni() // WheelTurningSpeedAdjuster made by Link2012 / ported by KillerSA
+    //fWheelTurningSpeed = fReturnValue
+    
+    ReturnValue = null
+    fReturnValue = null
+    CloseIni()
+end 
