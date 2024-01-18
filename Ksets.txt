@@ -4,9 +4,10 @@
 
 //booleans
 int bNoDrunkEffect, bDriveWWeapons, bSAimprovedWind
-int bNewMod, bExitCarFix, bAutoRemoveMarker, bHeadMove, RGBA[4]                            // Ksets by KillerSA
+int bNewMod, bExitCarFix, bAutoRemoveMarker, bHeadMove                          // Ksets by KillerSA
 int ReturnValue , bReturned
 
+int RGBA[4]
 const
     // Func params
     R0 = 0, R1 = 1, R2 = 2
