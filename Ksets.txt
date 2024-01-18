@@ -276,8 +276,6 @@ while true // loop
         goto @Reload
     end
     
-    write_mem_addr 0x2C93DC value 0x74 size 1 add_ib 1 protect 1
-    
     if bAutoRemoveMarker == TRUE
     then
         if 0AB6: store_target_marker_coords_to x y z
