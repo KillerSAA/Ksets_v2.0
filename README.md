@@ -1,4 +1,4 @@
 # Ksets
-Required: CleoMod and updated aml.
+Required: CleoMod and CleoIniFiles.
 
 Credits in ini file  
